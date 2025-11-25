@@ -48,7 +48,7 @@ export const SignUpPage = () => {
 
             // update user display name
             await updateProfile(user, {
-                displayName: fullName
+                displayName: userName
             });
 
             // save username and additional info
