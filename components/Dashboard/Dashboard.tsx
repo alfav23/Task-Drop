@@ -22,6 +22,7 @@ export default function Dashboard(): any {
     const handleCloseModal = () => setShowModal(false);
 
     const tasks = collection(db, "tasks");
+    console.log(tasks);
     const tdQ = query(tasks, where("inProgress", "==", false), where("completed", "==", false));
     const [toDoTasks, setToDoTasks] = useState<any[]>([]);
 
