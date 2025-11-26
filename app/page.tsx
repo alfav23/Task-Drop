@@ -3,11 +3,12 @@ import styles from "./page.module.css";
 import Dashboard from "@/components/Dashboard";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  console.log(user);
 
   useEffect(() => {
     // Only redirect after auth has finished initializing

@@ -14,24 +14,53 @@ export default function Dashboard(): any {
     
     const [ title, setTitle ] = useState('');
     const [ content, setContent ] = useState('');
+    const [ isInProgress, setIsInProgress ] = useState(false);
+    const [ isCompleted, setIsCompleted ] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
     const handleOpenModal = () => setShowModal(true);
     const handleCloseModal = () => setShowModal(false);
 
     const tasks = collection(db, "tasks");
-    const tdQ = query(tasks, where("inProgress", "==", false));
+    const tdQ = query(tasks, where("inProgress", "==", false), where("completed", "==", false));
     const [toDoTasks, setToDoTasks] = useState<any[]>([]);
+
+    const ipQ = query(tasks, where("inProgress", "==", true));
+    const [inProgressTasks, setInProgressTasks] = useState<any[]>([]);
+
+    const cQ = query(tasks, where("completed", "==", true));
+    const [completedTasks, setCompletedTasks] = useState<any[]>([]);
 
     const fetchToDoTasks = async() => {
         const querySnapshot = await getDocs(tdQ);
-        const first = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setToDoTasks(first);
+        const todo = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setToDoTasks(todo);
     };
 
     useEffect(() => {
         fetchToDoTasks();
     }, []);
+
+    const fetchInProgressTasks = async() => {
+        const querySnapshot = await getDocs(ipQ);
+        const progress = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setInProgressTasks(progress);
+    };
+
+    useEffect(() => {
+        fetchInProgressTasks();
+    }, []);
+
+    const fetchCompletedTasks = async() => {
+        const querySnapshot = await getDocs(cQ);
+        const done = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setCompletedTasks(done);
+    };
+
+    useEffect(() => {
+        fetchCompletedTasks();
+    }, []);
+
 
     const addNewTask = async(task: any) => {
         await setDoc(doc(db, "tasks", task.id), {
@@ -57,11 +86,15 @@ export default function Dashboard(): any {
 
         return (
             <div className={styles.dashboard}>
+                <h1>To Do</h1>
                 <div ref={setFirstDroppableRef} className={styles.toDoTasks}>
-                    To Do
-                    <div>
-                    
-                    </div>
+                    {toDoTasks.map((task) => (
+                        <div key={task.id} className={styles.taskContainer}>
+                            <h2>{task.title}</h2>
+                            <span>{task.createdBy}</span>
+                            <p>{task.content}</p>
+                        </div>
+                    ))}
                     <button 
                         className={styles.newTask}
                         onClick={handleOpenModal}
@@ -71,9 +104,13 @@ export default function Dashboard(): any {
                 </div>
                 <div ref={setSecondDroppableRef} className={styles.inProgressTasks}>
                     In Progress
-                    <div>
-                        
-                    </div>
+                    {inProgressTasks.map((task) => (
+                        <div key={task.id} className={styles.taskContainer}>
+                            <h2>{task.title}</h2>
+                            <span>{task.createdBy}</span>
+                            <p>{task.content}</p>
+                        </div>
+                    ))}
                     <button 
                         className={styles.newTask}
                         onClick={handleOpenModal}
@@ -82,14 +119,14 @@ export default function Dashboard(): any {
                     </button>
                 </div>
                 <div ref={setThirdDroppableRef} className={styles.completedTasks}>
-                    {toDoTasks.map((task) => (
+                    Completed
+                    {completedTasks.map((task) => (
                         <div key={task.id} className={styles.taskContainer}>
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
                         </div>
                     ))}
-                    Completed
                     <button 
                         className={styles.newTask}
                         onClick={handleOpenModal}
