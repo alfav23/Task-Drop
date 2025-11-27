@@ -1,7 +1,7 @@
 "use client"
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./Dashboard.module.scss";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import {useDroppable} from '@dnd-kit/core';
@@ -64,8 +64,9 @@ export default function Dashboard(): any {
     }, []);
 
 
-    const addNewTask = async(task: any) => {
-        await setDoc(doc(db, "tasks", task.id), {
+    const addNewTask = async(event: React.FormEvent) => {
+        event.preventDefault()
+        const newTask = await addDoc(collection(db, "tasks"), {
                 title: title, 
                 createdBy: uid,
                 createdAt: new Date(),
@@ -73,6 +74,7 @@ export default function Dashboard(): any {
                 inProgress: false,
                 completed: false
             });
+            console.log(newTask, newTask.id)
             await fetchToDoTasks();
     }
 
@@ -92,16 +94,17 @@ export default function Dashboard(): any {
         await fetchCompletedTasks();
     }
     
-    function MultipleDroppables() {
-        const {setNodeRef: setFirstDroppableRef} = useDroppable({
-            id: 'droppable-1',
-        });
-        const {setNodeRef: setSecondDroppableRef} = useDroppable({
-            id: 'droppable-2',
-        });
-        const {setNodeRef: setThirdDroppableRef} = useDroppable({
-            id: 'droppable-3',
-        });
+    const {setNodeRef: setFirstDroppableRef} = useDroppable({
+        id: 'droppable-1',
+    });
+
+    const {setNodeRef: setSecondDroppableRef} = useDroppable({
+        id: 'droppable-2',
+    });
+
+    const {setNodeRef: setThirdDroppableRef} = useDroppable({
+        id: 'droppable-3',
+    });
 
         return (
             <div className={styles.dashboard}>
@@ -128,6 +131,7 @@ export default function Dashboard(): any {
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
+                            <span>{task.createdAt}</span>
                         </div>
                     ))}
                     <button 
@@ -173,5 +177,3 @@ export default function Dashboard(): any {
             </div>
         )
     }
-    // } MultipleDroppables;
-}

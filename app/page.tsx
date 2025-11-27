@@ -1,5 +1,4 @@
 "use client";
-import Tasks from "@/components/Tasks";
 import styles from "./page.module.css";
 import Dashboard from "@/components/Dashboard";
 import { useAuth } from "@/context/AuthContext";
@@ -30,8 +29,7 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Tasks></Tasks>
-        {/* <Dashboard></Dashboard> */}
+        <Dashboard></Dashboard>
       </main>
     </div>
   );
