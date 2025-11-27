@@ -1,16 +1,17 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./Dashboard.module.scss";
 import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import {useDroppable} from '@dnd-kit/core';
 import Modal from "../Modal";
+import { useAuth } from "./../../context/AuthContext";
 
 export default function Dashboard(): any {
     const auth = getAuth();
-    const user = auth.currentUser ?? null;
-    const uid = user?.uid
+    const { user, loading } = useAuth();
+    const uid = user?.uid;
     
     const [ title, setTitle ] = useState('');
     const [ content, setContent ] = useState('');
@@ -72,6 +73,23 @@ export default function Dashboard(): any {
                 inProgress: false,
                 completed: false
             });
+            await fetchToDoTasks();
+    }
+
+    const markStarted = async(task: any) => {
+        await setDoc(doc(db, "tasks", task.id), {
+            inProgress: true,
+            completed: false
+        });
+        await fetchInProgressTasks();
+    }
+
+    const markComplete = async(task: any) => {
+        await setDoc(doc(db, "tasks", task.id), {
+            inProgress: false,
+            completed: true,
+        });
+        await fetchCompletedTasks();
     }
     
     function MultipleDroppables() {
@@ -154,5 +172,6 @@ export default function Dashboard(): any {
                 </Modal>
             </div>
         )
-    } MultipleDroppables;
+    }
+    // } MultipleDroppables;
 }

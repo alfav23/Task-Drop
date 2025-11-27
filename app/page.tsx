@@ -1,4 +1,5 @@
 "use client";
+import Tasks from "@/components/Tasks";
 import styles from "./page.module.css";
 import Dashboard from "@/components/Dashboard";
 import { useAuth } from "@/context/AuthContext";
@@ -10,26 +11,27 @@ export default function Home() {
   const { user, loading } = useAuth();
   console.log(user);
 
-  useEffect(() => {
-    // Only redirect after auth has finished initializing
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [loading, user, router]);
+  // useEffect(() => {
+  //   // Only redirect after auth has finished initializing
+  //   if (!loading && !user) {
+  //     router.push('/login');
+  //   }
+  // }, [loading, user, router]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (!user) {
-    // while redirecting, render nothing
-    return null;
-  }
+  // if (!user) {
+  //   // while redirecting, render nothing
+  //   return null;
+  // }
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Dashboard></Dashboard>
+        <Tasks></Tasks>
+        {/* <Dashboard></Dashboard> */}
       </main>
     </div>
   );
