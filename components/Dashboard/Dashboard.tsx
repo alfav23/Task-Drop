@@ -132,15 +132,15 @@ export default function Dashboard(): any {
 
         return (
             <div className={styles.dashboard}>
-                <h1>To Do</h1>
                 <div ref={setFirstDroppableRef} className={styles.toDoTasks}>
+                    <h1>To Do</h1>
                     {toDoTasks.map((task) => (
                         <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
                             <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
-                            <button onClick={() => deleteTask(task)}><FaTrash /></button>
+                            <button className={styles.deleteButton} onClick={() => deleteTask(task)}><FaTrash /></button>
                         </div>
                     ))}
                     <button 
@@ -153,10 +153,12 @@ export default function Dashboard(): any {
                 <div ref={setSecondDroppableRef} className={styles.inProgressTasks}>
                     <h1>In Progress</h1>
                     {inProgressTasks.map((task) => (
-                        <div key={task.id} className={styles.taskContainer}>
+                        <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
+                            <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
+                            <button className={styles.deleteButton} onClick={() => deleteTask(task)}><FaTrash /></button>
                         </div>
                     ))}
                     <button 
@@ -169,10 +171,12 @@ export default function Dashboard(): any {
                 <div ref={setThirdDroppableRef} className={styles.completedTasks}>
                     <h1>Completed</h1>
                     {completedTasks.map((task) => (
-                        <div key={task.id} className={styles.taskContainer}>
+                        <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
+                            <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
+                            <button className={styles.deleteButton} onClick={() => deleteTask(task)}><FaTrash /></button>
                         </div>
                     ))}
                     <button 
