@@ -1,17 +1,20 @@
 "use client"
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./Dashboard.module.scss";
-import { addDoc, collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
-import {useDroppable} from '@dnd-kit/core';
+import {useDraggable, useDroppable} from '@dnd-kit/core';
+import {CSS} from '@dnd-kit/utilities';
 import Modal from "../Modal";
-import { useAuth } from "./../../context/AuthContext";
+// import { useAuth } from "./../../context/AuthContext";
+import { FaHandPaper, FaHandRock, FaTrash } from "react-icons/fa";
 
 export default function Dashboard(): any {
     const auth = getAuth();
-    const { user, loading } = useAuth();
+    const user = auth.currentUser;
     const uid = user?.uid;
+    console.log(user);
     
     const [ title, setTitle ] = useState('');
     const [ content, setContent ] = useState('');
@@ -68,7 +71,7 @@ export default function Dashboard(): any {
         event.preventDefault()
         const newTask = await addDoc(collection(db, "tasks"), {
                 title: title, 
-                createdBy: uid,
+                createdBy: user?.displayName,
                 createdAt: new Date(),
                 content: content,
                 inProgress: false,
@@ -76,6 +79,18 @@ export default function Dashboard(): any {
             });
             console.log(newTask, newTask.id)
             await fetchToDoTasks();
+    }
+
+    const deleteTask = async(task: any) => {
+        await deleteDoc(doc(db, "tasks", task.id))
+        if (task.completed === false && task.inProgress === false){
+            await fetchToDoTasks();
+        }
+        if (task.completed === false && task.inProgress === true){
+            await fetchInProgressTasks();
+        } else {
+            await fetchToDoTasks();
+        }
     }
 
     const markStarted = async(task: any) => {
@@ -106,15 +121,26 @@ export default function Dashboard(): any {
         id: 'droppable-3',
     });
 
+    const {attributes, listeners, setNodeRef: setDraggableRef, transform} = useDraggable({
+        id: 'draggable-'
+        // id: `draggable-${task.id}`,
+    });
+  const style = {
+    transform: CSS.Translate.toString(transform),
+  };
+    
+
         return (
             <div className={styles.dashboard}>
                 <h1>To Do</h1>
                 <div ref={setFirstDroppableRef} className={styles.toDoTasks}>
                     {toDoTasks.map((task) => (
-                        <div key={task.id} className={styles.taskContainer}>
+                        <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
+                            <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
+                            <button onClick={() => deleteTask(task)}><FaTrash /></button>
                         </div>
                     ))}
                     <button 
@@ -125,13 +151,12 @@ export default function Dashboard(): any {
                     </button>
                 </div>
                 <div ref={setSecondDroppableRef} className={styles.inProgressTasks}>
-                    In Progress
+                    <h1>In Progress</h1>
                     {inProgressTasks.map((task) => (
                         <div key={task.id} className={styles.taskContainer}>
                             <h2>{task.title}</h2>
                             <span>{task.createdBy}</span>
                             <p>{task.content}</p>
-                            <span>{task.createdAt}</span>
                         </div>
                     ))}
                     <button 
@@ -142,7 +167,7 @@ export default function Dashboard(): any {
                     </button>
                 </div>
                 <div ref={setThirdDroppableRef} className={styles.completedTasks}>
-                    Completed
+                    <h1>Completed</h1>
                     {completedTasks.map((task) => (
                         <div key={task.id} className={styles.taskContainer}>
                             <h2>{task.title}</h2>
@@ -171,7 +196,7 @@ export default function Dashboard(): any {
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                         />
-                        <button onSubmit={addNewTask}>Publish</button>
+                        <button onClick={addNewTask}>Publish</button>
                     </form>
                 </Modal>
             </div>

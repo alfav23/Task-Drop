@@ -4,7 +4,7 @@ import { useState } from "react"
 import styles from "./login.module.scss";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Link from "next/link";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { browserLocalPersistence, setPersistence, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '@/lib/firebaseConfig';
 import Toast from "@/components/Toast/Toast";
 
@@ -23,9 +23,13 @@ const Login = () => {
         event.preventDefault();
         setError(null);
         try { 
-            await signInWithEmailAndPassword(auth, email, password);
-            setShowToast(true);
-            router.push('/');
+            setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                signInWithEmailAndPassword(auth, email, password);
+                setShowToast(true);
+                router.push('/');  
+            })
+            
         } catch (error) {
             setError('Failed to login. Please check your email and password.');
         }
