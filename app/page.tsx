@@ -10,12 +10,12 @@ export default function Home() {
   const { user, loading } = useAuth();
   console.log(user);
 
-  // useEffect(() => {
-  //   // Only redirect after auth has finished initializing
-  //   if (!loading && !user) {
-  //     router.push('/login');
-  //   }
-  // }, [loading, user, router]);
+  useEffect(() => {
+    // Only redirect after auth has finished initializing
+    if (!loading && !user) {
+      router.push('/login');
+    }
+  }, [loading, user, router]);
 
   // if (loading) {
   //   return <div>Loading...</div>;
