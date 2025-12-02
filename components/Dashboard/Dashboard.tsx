@@ -30,13 +30,13 @@ export default function Dashboard(): any {
 
     const tasks = collection(db, "tasks");
     console.log(tasks);
-    const tdQ = query(tasks, where("inProgress", "==", false), where("completed", "==", false));
+    const tdQ = query(tasks, where("inProgress", "==", false), where("completed", "==", false), where("createdBy", "==", `${user?.displayName}`));
     const [toDoTasks, setToDoTasks] = useState<any[]>([]);
 
-    const ipQ = query(tasks, where("inProgress", "==", true));
+    const ipQ = query(tasks, where("inProgress", "==", true), where("createdBy", "==", `${user?.displayName}`));
     const [inProgressTasks, setInProgressTasks] = useState<any[]>([]);
 
-    const cQ = query(tasks, where("completed", "==", true));
+    const cQ = query(tasks, where("completed", "==", true), where("createdBy", "==", `${user?.displayName}`));
     const [completedTasks, setCompletedTasks] = useState<any[]>([]);
 
     const fetchToDoTasks = async() => {
@@ -93,7 +93,7 @@ export default function Dashboard(): any {
         if (task.completed === false && task.inProgress === true){
             await fetchInProgressTasks();
         } else {
-            await fetchToDoTasks();
+            await fetchCompletedTasks();
         }
     }
 
