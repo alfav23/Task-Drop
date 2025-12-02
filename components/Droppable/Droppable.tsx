@@ -5,7 +5,7 @@ export default function Droppable ({ id, children }: any) {
     const { setNodeRef: setDroppableRef, isOver } = useDroppable({ id });
 
     return (
-        <div ref={setDroppableRef} style={{border: isOver? '1px solid white': 'none'}}>
+        <div className={styles.droppableContainer} ref={setDroppableRef} style={{border: isOver ? '1px solid white': 'none'}}>
             {children}
         </div>
     );

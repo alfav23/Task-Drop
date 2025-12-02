@@ -1,0 +1,8 @@
+.droppableContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    min-width: 200px;
+    gap: 1rem;
+    border-radius: 8px;
+}
