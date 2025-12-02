@@ -125,31 +125,6 @@ export default function Dashboard(): any {
         id: 'droppable-3',
     });
 
-    // //draggable element
-    // const Draggable = ({task, children}: any) => {
-
-    //     const { listeners, attributes, setNodeRef: setDraggableRef, transform} = useDraggable({
-    //         id: task.id,
-    //     });
-
-    //     const style = {
-    //         transform: CSS.Translate.toString(transform),
-    //     };
-
-    //     return (
-    //         <div ref={setDraggableRef} style={style}>
-    //             <button 
-    //                 {...listeners} 
-    //                 {...attributes} 
-    //                 className={styles.draggableListener}
-    //             >
-    //                 <FaHandPaper /> 
-    //             </button>
-    //             {children}
-    //         </div>
-    //     )
-    // }
-
         return (
             <div className={styles.dashboard}>
                 <DndContext collisionDetection={closestCorners}>

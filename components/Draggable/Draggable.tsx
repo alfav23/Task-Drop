@@ -14,7 +14,7 @@ export default function Draggable({task, children}: any) {
         };
 
         return (
-            <div ref={setDraggableRef} style={style}>
+            <div className={styles.taskContainer} ref={setDraggableRef} style={style}>
                 <button 
                     {...listeners} 
                     {...attributes} 

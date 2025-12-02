@@ -1,0 +1,14 @@
+.taskContainer {
+    position: relative;
+    touch-action: none;
+    border-radius: 8px;
+    background: #2e2e2e;
+    padding: 1.5rem;
+
+    .draggableListener {
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 16px;
+    }
+}
