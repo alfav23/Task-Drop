@@ -4,7 +4,7 @@ import styles from "./Dashboard.module.scss";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
-import {useDraggable, useDroppable} from '@dnd-kit/core';
+import {closestCorners, DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
 import Modal from "../Modal";
 // import { useAuth } from "./../../context/AuthContext";
@@ -23,7 +23,11 @@ export default function Dashboard(): any {
 
     const [showModal, setShowModal] = useState(false);
     const handleOpenModal = () => setShowModal(true);
-    const handleCloseModal = () => setShowModal(false);
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setTitle('');
+        setContent('');
+    }
 
     const tasks = collection(db, "tasks");
     console.log(tasks);
@@ -78,6 +82,7 @@ export default function Dashboard(): any {
                 completed: false
             });
             console.log(newTask, newTask.id)
+            handleCloseModal();
             await fetchToDoTasks();
     }
 
@@ -121,88 +126,126 @@ export default function Dashboard(): any {
         id: 'droppable-3',
     });
 
-    const {attributes, listeners, setNodeRef: setDraggableRef, transform} = useDraggable({
-        id: 'draggable-'
-        // id: `draggable-${task.id}`,
-    });
-  const style = {
-    transform: CSS.Translate.toString(transform),
-  };
-    
+    //draggable element
+    const Draggable = ({task, children}: any) => {
+
+        const { listeners, attributes, setNodeRef: setDraggableRef, transform} = useDraggable({
+            id: task.id,
+        });
+
+        const style = {
+            transform: CSS.Translate.toString(transform),
+        };
+
+        return (
+            <div ref={setDraggableRef} style={style}>
+                <button 
+                    {...listeners} 
+                    {...attributes} 
+                    className={styles.draggableListener}
+                >
+                    <FaHandPaper /> 
+                </button>
+                {children}
+            </div>
+        )
+    }
 
         return (
             <div className={styles.dashboard}>
-                <div ref={setFirstDroppableRef} className={styles.toDoTasks}>
-                    <h1>To Do</h1>
-                    {toDoTasks.map((task) => (
-                        <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
-                            <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
-                            <h2>{task.title}</h2>
-                            <span>{task.createdBy}</span>
-                            <p>{task.content}</p>
-                            <button className={styles.deleteButton} onClick={() => deleteTask(task)}><FaTrash /></button>
-                        </div>
-                    ))}
-                    <button 
-                        className={styles.newTask}
-                        onClick={handleOpenModal}
-                    >
-                        + New Task
-                    </button>
-                </div>
-                <div ref={setSecondDroppableRef} className={styles.inProgressTasks}>
-                    <h1>In Progress</h1>
-                    {inProgressTasks.map((task) => (
-                        <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
-                            <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
-                            <h2>{task.title}</h2>
-                            <span>{task.createdBy}</span>
-                            <p>{task.content}</p>
-                            <button className={styles.deleteButton} onClick={() => deleteTask(task)}><FaTrash /></button>
-                        </div>
-                    ))}
-                    <button 
-                        className={styles.newTask}
-                        onClick={handleOpenModal}
-                    >
-                        + New Task
-                    </button>
-                </div>
-                <div ref={setThirdDroppableRef} className={styles.completedTasks}>
-                    <h1>Completed</h1>
-                    {completedTasks.map((task) => (
-                        <div ref={setDraggableRef} key={task.id} className={styles.taskContainer}>
-                            <button {...listeners} {...attributes} className={styles.draggableListener}><FaHandPaper /></button>
-                            <h2>{task.title}</h2>
-                            <span>{task.createdBy}</span>
-                            <p>{task.content}</p>
-                            <button className={styles.deleteButton} onClick={() => deleteTask(task)}><FaTrash /></button>
-                        </div>
-                    ))}
-                    <button 
-                        className={styles.newTask}
-                        onClick={handleOpenModal}
-                    >
-                        + New Task
-                    </button>
-                </div>
-                <Modal show={showModal} onClose={handleCloseModal}>
-                    <form>
-                        <input 
-                            type="text"
-                            placeholder="Name your new task"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)} 
-                        />
-                        <input 
-                            type="text"
-                            placeholder="Describe your new task" 
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                        />
-                        <button onClick={addNewTask}>Publish</button>
-                    </form>
-                </Modal>
+                <DndContext collisionDetection={closestCorners}>
+                    <div ref={setFirstDroppableRef} className={styles.toDoTasks}>
+                        <h1>To Do</h1>
+                        {toDoTasks.map((task) => (
+                            
+                            <div key={task.id}>
+                                <Draggable task={task}>
+                                    <h2>{task.title}</h2>
+                                    <span>{task.createdBy}</span>
+                                    <p>{task.content}</p>
+                                    <button 
+                                        className={styles.deleteButton} 
+                                        onClick={() => deleteTask(task)}
+                                    >
+                                    <FaTrash />
+                                    </button>
+                                </ Draggable >
+                            </div> 
+                        ))}
+                        <button 
+                            className={styles.newTask}
+                            onClick={handleOpenModal}
+                        >
+                            + New Task
+                        </button>
+                    </div>
+                    <div ref={setSecondDroppableRef} className={styles.inProgressTasks}>
+                        <h1>In Progress</h1>
+                        {inProgressTasks.map((task) => (
+                            <div key={task.id}>
+                                <Draggable task={task}>
+                                    <h2>{task.title}</h2>
+                                    <span>{task.createdBy}</span>
+                                    <p>{task.content}</p>
+                                    <button 
+                                        className={styles.deleteButton} 
+                                        onClick={() => deleteTask(task)}
+                                    >
+                                    <FaTrash />
+                                    </button>
+                                </ Draggable > 
+                            </div>
+                        ))}
+                        <button 
+                            className={styles.newTask}
+                            onClick={handleOpenModal}
+                        >
+                            + New Task
+                        </button>
+                    </div>
+                    <div ref={setThirdDroppableRef} className={styles.completedTasks}>
+                        <h1>Completed</h1>
+                        {completedTasks.map((task) => (
+                            <div key={task.id}>
+                                <Draggable task={task}>
+                                    <h2>{task.title}</h2>
+                                    <span>{task.createdBy}</span>
+                                    <p>{task.content}</p>
+                                    <button 
+                                        className={styles.deleteButton} 
+                                        onClick={() => deleteTask(task)}
+                                    >
+                                    <FaTrash />
+                                    </button>
+                                </ Draggable > 
+                            </div>
+                        ))}
+                        <button 
+                            className={styles.newTask}
+                            onClick={handleOpenModal}
+                        >
+                            + New Task
+                        </button>
+                    </div>
+                    {/* modal for new task */}
+                    <Modal show={showModal} onClose={handleCloseModal}>
+                        <form>
+                            <input 
+                                type="text"
+                                placeholder="Name your new task"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)} 
+                            />
+                            <input 
+                                type="text"
+                                placeholder="Describe your new task" 
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                            />
+                            <button onClick={addNewTask}>Publish</button>
+                        </form>
+                    </Modal>
+                </DndContext>
             </div>
         )
     }
