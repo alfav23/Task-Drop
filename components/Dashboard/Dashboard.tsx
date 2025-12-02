@@ -1,14 +1,13 @@
 "use client"
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Dashboard.module.scss";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import {closestCorners, DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
-import {CSS} from '@dnd-kit/utilities';
 import Modal from "../Modal";
-// import { useAuth } from "./../../context/AuthContext";
-import { FaHandPaper, FaHandRock, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import Draggable from "../Draggable";
 
 export default function Dashboard(): any {
     const auth = getAuth();
@@ -126,30 +125,30 @@ export default function Dashboard(): any {
         id: 'droppable-3',
     });
 
-    //draggable element
-    const Draggable = ({task, children}: any) => {
+    // //draggable element
+    // const Draggable = ({task, children}: any) => {
 
-        const { listeners, attributes, setNodeRef: setDraggableRef, transform} = useDraggable({
-            id: task.id,
-        });
+    //     const { listeners, attributes, setNodeRef: setDraggableRef, transform} = useDraggable({
+    //         id: task.id,
+    //     });
 
-        const style = {
-            transform: CSS.Translate.toString(transform),
-        };
+    //     const style = {
+    //         transform: CSS.Translate.toString(transform),
+    //     };
 
-        return (
-            <div ref={setDraggableRef} style={style}>
-                <button 
-                    {...listeners} 
-                    {...attributes} 
-                    className={styles.draggableListener}
-                >
-                    <FaHandPaper /> 
-                </button>
-                {children}
-            </div>
-        )
-    }
+    //     return (
+    //         <div ref={setDraggableRef} style={style}>
+    //             <button 
+    //                 {...listeners} 
+    //                 {...attributes} 
+    //                 className={styles.draggableListener}
+    //             >
+    //                 <FaHandPaper /> 
+    //             </button>
+    //             {children}
+    //         </div>
+    //     )
+    // }
 
         return (
             <div className={styles.dashboard}>
