@@ -97,6 +97,14 @@ export default function Dashboard(): any {
         }
     }
 
+    const markNotStarted = async(task: any) => {
+        await setDoc(doc(db, "tasks", task.id), {
+            inProgress: false,
+            completed: false
+        });
+        await fetchInProgressTasks();
+    }
+
     const markStarted = async(task: any) => {
         await setDoc(doc(db, "tasks", task.id), {
             inProgress: true,
@@ -112,26 +120,26 @@ export default function Dashboard(): any {
         });
         await fetchCompletedTasks();
     }
-    
-    const {setNodeRef: setFirstDroppableRef} = useDroppable({
-        id: 'droppable-1',
+
+    const {setNodeRef: setFirstDroppable} = useDroppable({
+        id: 'droppable-1'
     });
 
-    const {setNodeRef: setSecondDroppableRef} = useDroppable({
-        id: 'droppable-2',
+    const {setNodeRef: setSecondDroppable} = useDroppable({
+        id: 'droppable-2'
     });
 
-    const {setNodeRef: setThirdDroppableRef} = useDroppable({
-        id: 'droppable-3',
+    const {setNodeRef: setThirdDroppable} = useDroppable({
+        id: 'droppable-3'
     });
+
 
         return (
             <div className={styles.dashboard}>
                 <DndContext collisionDetection={closestCorners}>
-                    <div ref={setFirstDroppableRef} className={styles.toDoTasks}>
+                    <div ref={setFirstDroppable} className={styles.toDoTasks}>
                         <h1>To Do</h1>
                         {toDoTasks.map((task) => (
-                            
                             <div key={task.id}>
                                 <Draggable task={task}>
                                     <h2>{task.title}</h2>
@@ -153,7 +161,7 @@ export default function Dashboard(): any {
                             + New Task
                         </button>
                     </div>
-                    <div ref={setSecondDroppableRef} className={styles.inProgressTasks}>
+                    <div ref={setSecondDroppable} className={styles.inProgressTasks}>
                         <h1>In Progress</h1>
                         {inProgressTasks.map((task) => (
                             <div key={task.id}>
@@ -177,7 +185,7 @@ export default function Dashboard(): any {
                             + New Task
                         </button>
                     </div>
-                    <div ref={setThirdDroppableRef} className={styles.completedTasks}>
+                    <div ref={setThirdDroppable} className={styles.completedTasks}>
                         <h1>Completed</h1>
                         {completedTasks.map((task) => (
                             <div key={task.id}>
