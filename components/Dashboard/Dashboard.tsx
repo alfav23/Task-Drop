@@ -4,7 +4,8 @@ import styles from "./Dashboard.module.scss";
 import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
-import {closestCorners, DndContext, useDraggable, useDroppable} from '@dnd-kit/core';
+import {closestCorners, DndContext, useDroppable} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import Modal from "../Modal";
 import { FaTrash } from "react-icons/fa";
 import Draggable from "../Draggable";
@@ -102,7 +103,7 @@ export default function Dashboard(): any {
             inProgress: false,
             completed: false
         });
-        await fetchInProgressTasks();
+        await fetchToDoTasks();
     }
 
     const markStarted = async(task: any) => {
@@ -121,23 +122,10 @@ export default function Dashboard(): any {
         await fetchCompletedTasks();
     }
 
-    const {setNodeRef: setFirstDroppable} = useDroppable({
-        id: 'droppable-1'
-    });
-
-    const {setNodeRef: setSecondDroppable} = useDroppable({
-        id: 'droppable-2'
-    });
-
-    const {setNodeRef: setThirdDroppable} = useDroppable({
-        id: 'droppable-3'
-    });
-
-
         return (
             <div className={styles.dashboard}>
                 <DndContext collisionDetection={closestCorners}>
-                    <div ref={setFirstDroppable} className={styles.toDoTasks}>
+                    <div className={styles.toDoTasks}>
                         <h1>To Do</h1>
                         {toDoTasks.map((task) => (
                             <div key={task.id}>
@@ -149,7 +137,7 @@ export default function Dashboard(): any {
                                         className={styles.deleteButton} 
                                         onClick={() => deleteTask(task)}
                                     >
-                                    <FaTrash />
+                                        <FaTrash />
                                     </button>
                                 </ Draggable >
                             </div> 
@@ -161,11 +149,12 @@ export default function Dashboard(): any {
                             + New Task
                         </button>
                     </div>
-                    <div ref={setSecondDroppable} className={styles.inProgressTasks}>
+
+                    <div className={styles.inProgressTasks}>
                         <h1>In Progress</h1>
                         {inProgressTasks.map((task) => (
                             <div key={task.id}>
-                                <Draggable task={task}>
+                                <Draggable task={task} >
                                     <h2>{task.title}</h2>
                                     <span>{task.createdBy}</span>
                                     <p>{task.content}</p>
@@ -173,9 +162,9 @@ export default function Dashboard(): any {
                                         className={styles.deleteButton} 
                                         onClick={() => deleteTask(task)}
                                     >
-                                    <FaTrash />
+                                        <FaTrash />
                                     </button>
-                                </ Draggable > 
+                                </ Draggable >
                             </div>
                         ))}
                         <button 
@@ -185,7 +174,8 @@ export default function Dashboard(): any {
                             + New Task
                         </button>
                     </div>
-                    <div ref={setThirdDroppable} className={styles.completedTasks}>
+
+                    <div className={styles.completedTasks}>
                         <h1>Completed</h1>
                         {completedTasks.map((task) => (
                             <div key={task.id}>
@@ -197,7 +187,7 @@ export default function Dashboard(): any {
                                         className={styles.deleteButton} 
                                         onClick={() => deleteTask(task)}
                                     >
-                                    <FaTrash />
+                                        <FaTrash />
                                     </button>
                                 </ Draggable > 
                             </div>
@@ -209,25 +199,25 @@ export default function Dashboard(): any {
                             + New Task
                         </button>
                     </div>
-                    {/* modal for new task */}
-                    <Modal show={showModal} onClose={handleCloseModal}>
-                        <form>
-                            <input 
-                                type="text"
-                                placeholder="Name your new task"
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)} 
-                            />
-                            <input 
-                                type="text"
-                                placeholder="Describe your new task" 
-                                value={content}
-                                onChange={(e) => setContent(e.target.value)}
-                            />
-                            <button onClick={addNewTask}>Publish</button>
-                        </form>
-                    </Modal>
                 </DndContext>
+                    {/* modal for new task */}
+                <Modal show={showModal} onClose={handleCloseModal}>
+                    <form>
+                        <input 
+                            type="text"
+                            placeholder="Name your new task"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)} 
+                        />
+                        <input 
+                            type="text"
+                            placeholder="Describe your new task" 
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                        />
+                        <button onClick={addNewTask}>Publish</button>
+                    </form>
+                </Modal>
             </div>
         )
     }
