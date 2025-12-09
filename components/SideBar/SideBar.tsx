@@ -3,7 +3,7 @@ import { collection, where, query, getDocs } from "firebase/firestore";
 import styles from "./SideBar.module.scss";
 import { useState } from "react";
 import { db } from "@/lib/firebaseConfig";
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { FaSearch, FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
 
 export default function Sidebar() {
@@ -28,6 +28,10 @@ export default function Sidebar() {
         } else {
             setToggleVisible(true);
         }
+    }
+
+    const logoutUser = () => {
+        signOut(auth);
     }
 
     return(
@@ -64,7 +68,7 @@ export default function Sidebar() {
                 <nav className={styles.sideBarNav}>
                     <a className={styles.navItem} href="/">Projects</a>
                     <a className={styles.navItem} href="/">New Project</a>
-                    <a className={styles.navItem} href="./login">Logout</a>
+                    <a className={styles.navItem} onClick={logoutUser} href="/">Logout</a>
                 </nav>
             </div>
         </div>
