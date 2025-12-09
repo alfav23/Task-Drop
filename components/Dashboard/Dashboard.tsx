@@ -11,6 +11,7 @@ import Modal from "../Modal";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
+import Toast from "../Toast";
 
 export default function Dashboard(): any {
     const auth = getAuth();
@@ -38,8 +39,8 @@ export default function Dashboard(): any {
     const [showModalEdit, setShowModalEdit] = useState(false);
     const handleOpenModalEdit = (task: any) => {
         setShowModalEdit(true);
-        setTitle(task.title);
-        setContent(task.content);
+        setUpdatedTitle(task.title);
+        setUpdatedContent(task.content);
         setCurrentTaskId(task.id);
     }
 
@@ -93,7 +94,10 @@ export default function Dashboard(): any {
 
     const addNewTask = async(event: React.FormEvent) => {
         event.preventDefault()
-        const newTask = await addDoc(collection(db, "tasks"), {
+        if (title === '' || content === ''){
+            return;
+        } else {
+            const newTask = await addDoc(collection(db, "tasks"), {
                 title: title, 
                 createdBy: user?.displayName,
                 createdAt: new Date(),
@@ -104,16 +108,32 @@ export default function Dashboard(): any {
             console.log(newTask, newTask.id)
             handleCloseModalNew();
             await fetchToDoTasks();
+        }
     }
 
     const updateTask = async (event: React.FormEvent) => {
         event.preventDefault();
         const colRef = collection(db, "tasks");
         const docRef = doc(colRef, currentTaskId);
-        await updateDoc(docRef, {
-            title: updatedTitle,
-            content: updatedContent,
-        })
+
+        if (updatedContent === '' && updatedTitle === '') {
+            handleCloseModalEdit();
+        }
+        else if (updatedTitle === ''){
+            await updateDoc(docRef, {
+                content: updatedContent,
+            })
+        } else if (updatedContent === '') {
+            await updateDoc(docRef, {
+                title: updatedTitle,
+            })
+        } else {
+            await updateDoc(docRef, {
+                title: updatedTitle,
+                content: updatedContent,
+            })
+        }
+        
         handleCloseModalEdit();
         // refetch tasks to update changes
         await fetchToDoTasks();
