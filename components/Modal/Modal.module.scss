@@ -24,3 +24,11 @@
     top: 0;
     right: 0;
 }
+
+@media screen and (max-width: 425px) {
+    .modalContent {
+        padding: 1rem;
+    }
+}
+
+// add media queries for light mode for css changed manually (modal overlay, etc)
