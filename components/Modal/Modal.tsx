@@ -2,7 +2,7 @@
 import React from "react";
 import styles from "./Modal.module.scss";
 
-export default function Modal({ show, onClose, children }: any) {
+export default function Modal({ show, onClose, children}: any) {
     if (!show) {
         return null;
     }
