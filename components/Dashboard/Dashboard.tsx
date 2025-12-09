@@ -121,7 +121,6 @@ export default function Dashboard(): any {
         const activeId = active.id;
         const overId = over.id;
 
-        // Determine the new status based on the drop location
         let newStatus = null;
         if (overId === "in-progress") {
             newStatus = { inProgress: true, completed: false };
@@ -136,7 +135,6 @@ export default function Dashboard(): any {
         const taskRef = doc(db, "tasks", activeId);
         await setDoc(taskRef, newStatus, { merge: true });
 
-        // Refetch tasks to update the UI
         await fetchToDoTasks();
         await fetchInProgressTasks();
         await fetchCompletedTasks();
@@ -228,14 +226,17 @@ export default function Dashboard(): any {
                 </DndContext>
                     {/* modal for new task */}
                 <Modal show={showModal} onClose={handleCloseModal}>
-                    <form>
+                    <form className={styles.modalForm}>
+                        <label>New Task</label>
                         <input 
+                            className={styles.newTaskTitle}
                             type="text"
                             placeholder="Name your new task"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)} 
                         />
                         <input 
+                            className={styles.newTaskContent}
                             type="text"
                             placeholder="Describe your new task" 
                             value={content}
