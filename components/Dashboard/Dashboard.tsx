@@ -100,30 +100,6 @@ export default function Dashboard(): any {
         }
     }
 
-    const markNotStarted = async(task: any) => {
-        await setDoc(doc(db, "tasks", task.id), {
-            inProgress: false,
-            completed: false
-        });
-        await fetchToDoTasks();
-    }
-
-    const markStarted = async(task: any) => {
-        await setDoc(doc(db, "tasks", task.id), {
-            inProgress: true,
-            completed: false
-        });
-        await fetchInProgressTasks();
-    }
-
-    const markComplete = async(task: any) => {
-        await setDoc(doc(db, "tasks", task.id), {
-            inProgress: false,
-            completed: true,
-        });
-        await fetchCompletedTasks();
-    }
-
     const touchSensor = useSensor(TouchSensor, {
         // Press delay of 250ms, with tolerance of 5px of movement
         activationConstraint: {
@@ -136,8 +112,6 @@ export default function Dashboard(): any {
     const keyboardSensor = useSensor(KeyboardSensor);
 
     const sensors = useSensors( touchSensor, mouseSensor, keyboardSensor);
-
-    const [parent, setParent] = useState(null);
 
     const handleDragEnd = async (event: any) => {
         const { active, over } = event;
