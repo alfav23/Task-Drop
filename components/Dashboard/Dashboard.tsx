@@ -139,21 +139,44 @@ export default function Dashboard(): any {
 
     const [parent, setParent] = useState(null);
 
-    function handleDragEnd(event: any) {
-        const {over} = event;
-        setParent(over ? over.id : null)
+    const handleDragEnd = async (event: any) => {
+        const { active, over } = event;
+
+        if (!over) return;
+
+        const activeId = active.id;
+        const overId = over.id;
+
+        // Determine the new status based on the drop location
+        let newStatus = null;
+        if (overId === "in-progress") {
+            newStatus = { inProgress: true, completed: false };
+        } else if (overId === "complete") {
+            newStatus = { inProgress: false, completed: true };
+        } else if (overId === "to-do") {
+            newStatus = { inProgress: false, completed: false };
+        } else {
+            return;
+        }
+
+        const taskRef = doc(db, "tasks", activeId);
+        await setDoc(taskRef, newStatus, { merge: true });
+
+        // Refetch tasks to update the UI
+        await fetchToDoTasks();
+        await fetchInProgressTasks();
+        await fetchCompletedTasks();
     }
 
         return (
             <div className={styles.dashboard}>
-                <DndContext onDragEnd={(event: any ) => handleDragEnd(event)} sensors={sensors} collisionDetection={closestCorners} modifiers={[restrictToWindowEdges]}>
+                <DndContext onDragEnd={(event: any) => handleDragEnd(event)} sensors={sensors} collisionDetection={closestCorners} modifiers={[restrictToWindowEdges]}>
                     
                     <div className={styles.toDoTasks}>
                         <h1>To Do</h1>
                         <Droppable id='to-do'>
                             {toDoTasks.map((task) => (
                                 <div key={task.id}>
-                                    {parent === 'to-do' || 'in-progress' || 'complete' ?
                                     <Draggable task={task}>
                                         <h2>{task.title}</h2>
                                         <span>{task.createdBy}</span>
@@ -165,7 +188,6 @@ export default function Dashboard(): any {
                                             <FaTrash />
                                         </button>
                                     </ Draggable >
-                                    : '+'}
                                 </div> 
                             ))}
                         </Droppable>
@@ -181,7 +203,6 @@ export default function Dashboard(): any {
                         <Droppable id='in-progress'>
                             {inProgressTasks.map((task) => (
                                 <div key={task.id}>
-                                    {parent === 'to-do' || 'in-progress' || 'complete' ?
                                     <Draggable task={task} >
                                         <h2>{task.title}</h2>
                                         <span>{task.createdBy}</span>
@@ -193,7 +214,6 @@ export default function Dashboard(): any {
                                             <FaTrash />
                                         </button>
                                     </ Draggable >
-                                    : '+'}
                                 </div>
                             ))}
                         </Droppable>
@@ -210,7 +230,6 @@ export default function Dashboard(): any {
                             
                             {completedTasks.map((task) => (
                                 <div key={task.id}>
-                                    {parent === 'to-do' || 'in-progress' || 'complete' ?
                                     <Draggable task={task}>
                                         <h2>{task.title}</h2>
                                         <span>{task.createdBy}</span>
@@ -222,7 +241,6 @@ export default function Dashboard(): any {
                                             <FaTrash />
                                         </button>
                                     </ Draggable > 
-                                    : '+'}
                                 </div>
                             ))}
                         </Droppable>

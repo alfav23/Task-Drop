@@ -5,6 +5,7 @@ import { useState } from "react";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth, signOut } from "firebase/auth";
 import { FaSearch, FaArrowAltCircleLeft, FaArrowAltCircleRight, FaRegUserCircle } from "react-icons/fa";
+import { SiZebpay } from "react-icons/si";
 
 export default function Sidebar() {
     const auth = getAuth();
@@ -74,7 +75,7 @@ export default function Sidebar() {
                 </nav>
 
                 <div className={styles.currentUser}>
-                    <FaRegUserCircle />
+                    <FaRegUserCircle style={{fontSize: 24}}/>
                     {user?.displayName}
                 </div>
 
