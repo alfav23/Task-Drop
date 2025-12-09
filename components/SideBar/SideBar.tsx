@@ -4,7 +4,7 @@ import styles from "./SideBar.module.scss";
 import { useState } from "react";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth, signOut } from "firebase/auth";
-import { FaSearch, FaArrowAltCircleLeft, FaArrowAltCircleRight } from "react-icons/fa";
+import { FaSearch, FaArrowAltCircleLeft, FaArrowAltCircleRight, FaRegUserCircle } from "react-icons/fa";
 
 export default function Sidebar() {
     const auth = getAuth();
@@ -41,6 +41,7 @@ export default function Sidebar() {
                 { toggleVisible ? <FaArrowAltCircleLeft /> : <FaArrowAltCircleRight /> }
             </div>
             <div className={styles.sideBar} style={!toggleVisible ? {display: 'none'} : {display: 'flex'}}>
+
                 <div className={styles.searchContainer}>
                     <form className={styles.searchForm}>
                         <input 
@@ -65,11 +66,18 @@ export default function Sidebar() {
                         </button>
                     </form>
                 </div>
+
                 <nav className={styles.sideBarNav}>
                     <a className={styles.navItem} href="/">Projects</a>
                     <a className={styles.navItem} href="/">New Project</a>
                     <a className={styles.navItem} onClick={logoutUser} href="/">Logout</a>
                 </nav>
+
+                <div className={styles.currentUser}>
+                    <FaRegUserCircle />
+                    {user?.displayName}
+                </div>
+
             </div>
         </div>
     )

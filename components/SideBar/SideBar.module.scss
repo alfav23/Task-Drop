@@ -43,3 +43,18 @@
     right: 1rem;
     cursor: pointer;
 }
+
+.currentUser {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    position: absolute;
+    bottom: 0;
+    right: 20%;
+    background-color: #6b6b6b;
+    border: 2px solid transparent;
+    border-radius: 2px;
+}
