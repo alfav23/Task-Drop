@@ -37,8 +37,6 @@ const Login = () => {
 
     return (
         <section className={styles.loginContainer}>
-             <div className={styles.logoContainer}>
-            </div>
 
             <h1 className={styles.title}>Log In</h1>
             
@@ -47,7 +45,7 @@ const Login = () => {
                     className={styles.input} 
                     type="email" 
                     value={email} 
-                    placeholder="Username or email"
+                    placeholder="Email"
                     onChange={(e) => setEmail(e.target.value)}
                 />
                 <div className={styles.passwordContainer}>

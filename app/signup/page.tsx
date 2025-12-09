@@ -78,7 +78,7 @@ export const SignUpPage = () => {
 
     return(
         <section className={styles.signupContainer}>
-            <h1 className={styles.title}>mywatchlists sign up</h1>
+            <h1 className={styles.title}>Task Drop</h1>
             <form onSubmit={handleSignUp} className={styles.form}>
                 <input className={styles.input} type="text" placeholder="Full Name" value={fullName} onChange={(event) => setFullName(event.target.value) }/>
 
