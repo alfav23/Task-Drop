@@ -1,4 +1,5 @@
 "use client";
+import SideBar from "@/components/SideBar";
 import styles from "./page.module.css";
 import Dashboard from "@/components/Dashboard";
 import { useAuth } from "@/context/AuthContext";
@@ -25,6 +26,7 @@ export default function Home() {
     return (
       <div className={styles.page}>
         <main className={styles.main}>
+          <SideBar></SideBar>
           <Dashboard></Dashboard>
         </main>
       </div>

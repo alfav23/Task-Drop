@@ -1,0 +1,45 @@
+.sideBarContainer {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid white;
+    height: 80vh;
+    gap: 1rem;
+    position: relative;
+}
+
+.sideBar {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    padding: 120px 60px 0 0;
+    gap: 1rem;
+}
+
+.sideBarNav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+}
+
+.searchForm {
+    display: flex;
+    gap: 3px;
+}
+
+.searchInput {
+    width: 90%;
+}
+
+.searchSubmit {
+    display: flex;
+    padding: 0.25rem;
+}
+
+.toggleSideBar{
+    position: absolute;
+    font-size: 25px;
+    top: 0;
+    right: 1rem;
+    cursor: pointer;
+}
