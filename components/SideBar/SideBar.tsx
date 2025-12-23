@@ -1,11 +1,10 @@
 'use client'
-import { collection, where, query, getDocs } from "firebase/firestore";
+import { collection, where, query, getDocs, and } from "firebase/firestore";
 import styles from "./SideBar.module.scss";
 import { useState } from "react";
 import { db } from "@/lib/firebaseConfig";
 import { getAuth, signOut } from "firebase/auth";
 import { FaSearch, FaArrowAltCircleLeft, FaArrowAltCircleRight, FaRegUserCircle } from "react-icons/fa";
-import { SiZebpay } from "react-icons/si";
 
 export default function Sidebar() {
     const auth = getAuth();
@@ -17,7 +16,7 @@ export default function Sidebar() {
     const executeSearch = async(event: React.FormEvent) => {
         event.preventDefault();
         const tasks = collection(db, "tasks")
-        const q = query(tasks, where("title", "==", searchParameter), where("createdBy", "==", user?.displayName))
+        const q = query(tasks, and(where("title", "==", searchParameter), where("createdBy", "==", user?.displayName)));
         const querySnapshot = await getDocs(q);
         const searchResults = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setResults(searchResults);

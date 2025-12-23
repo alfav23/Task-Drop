@@ -6,23 +6,18 @@ import { db } from "@/lib/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { closestCorners, DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import Modal from "../Modal";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
-import Toast from "../Toast";
 
 export default function Dashboard(): any {
     const auth = getAuth();
     const user = auth.currentUser;
-    const uid = user?.uid;
     console.log(user);
     
     const [ title, setTitle ] = useState('');
     const [ content, setContent ] = useState('');
-    const [ isInProgress, setIsInProgress ] = useState(false);
-    const [ isCompleted, setIsCompleted ] = useState(false);
 
     const [showModalNew, setShowModalNew] = useState(false);
     const handleOpenModalNew = () => setShowModalNew(true);
