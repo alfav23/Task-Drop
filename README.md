@@ -2,10 +2,6 @@
 
 Drag and drop a series of tasks into categories: To-do, In-progress, and Complete.
 
-Organize your tasks into Projects, perfect for both business and personal needs.
-
-See analytics reflecting your activity throughout the week, hours spent on each session, and total tasks completed.
-
 ## Getting Started
 
 First, run the development server:
